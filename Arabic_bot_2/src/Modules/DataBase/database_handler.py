@@ -1,8 +1,5 @@
-from ast import Call
-from multiprocessing import Condition
 import sqlite3
 from time import sleep, time
-from defer import return_value
 from telegram import *
 from telegram.ext import *
 from datetime import datetime
@@ -12,13 +9,13 @@ current_path = os.getcwd()
 
 class database:
     def __init__(self) -> None:
-        self.conn = sqlite3.connect(f"{current_path}/Modules/DataBase/DataBase.db", check_same_thread=False)
+        self.conn = sqlite3.connect(f"/{current_path}/Modules/DataBase/DataBase.db", check_same_thread=False)
         self.cursor = self.conn.cursor()
 
 
     """Creating the database"""
     def createDatabase(self):
-        self.conn = sqlite3.connect(f"{current_path}/Modules/DataBase/DataBase.db", check_same_thread=False)
+        self.conn = sqlite3.connect(f"/{current_path}/Modules/DataBase/DataBase.db", check_same_thread=False)
         
         # Create table for users
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS users_info(
@@ -48,6 +45,7 @@ class database:
         self.cursor.execute("""CREATE TABLE IF NOT EXISTS other(
             id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
             message TEXT,
+            number_of_users int,
             first_twiny int
         )""")
 
@@ -292,6 +290,14 @@ class database:
             self.conn.commit()
 
     def change_confition(self, update: Update, context: CallbackContext):
-
         self.cursor.execute(f"UPDATE users_info SET payment_check = '1' WHERE id = {update.effective_chat.id}")
         self.conn.commit()
+
+    def number_of_users(self, update: Update, context: CallbackContext):
+        self.cursor.execute(f"SELECT number_of_users FROM other WHERE id == 1")
+        result = self.cursor.fetchall()
+        for row in result:
+            set_users_number = row[0] + 1
+            self.cursor.execute(f"UPDATE other SET number_of_users = '{set_users_number}' WHERE id = 1")
+            self.conn.commit()
+            return set_users_number

@@ -24,8 +24,9 @@ class msg:
 
         data.botStart(update, context)
 
+
         context.bot.send_message('@botbotte',
-                                 text=f"{data.first_twiny_number(update, context)}. {update.effective_user.first_name} {update.effective_user.last_name}\nID: @{update.effective_user.username}")
+                                 text=f"{data.number_of_users(update, context)}. {update.effective_user.first_name} {update.effective_user.last_name}\nID: @{update.effective_user.username}")
 
         context.bot.send_chat_action(chat_id=update.effective_chat.id, action=ChatAction.TYPING)
 
