@@ -1,4 +1,5 @@
 from ast import Call
+from multiprocessing import Condition
 import sqlite3
 from time import sleep, time
 from defer import return_value
@@ -6,8 +7,6 @@ from telegram import *
 from telegram.ext import *
 from datetime import datetime
 import os
-
-from urllib3 import Retry
 
 current_path = os.getcwd()
 
@@ -30,6 +29,7 @@ class database:
             level INTEGER,
             score str,
             id str,
+            payment_check int,
             lessons_needed str,
             start_time str
         )""")
@@ -45,9 +45,10 @@ class database:
             lesson TEXT
         )""")
 
-        self.cursor.execute("""CREATE TABLE IF NOT EXISTS send_msg(
+        self.cursor.execute("""CREATE TABLE IF NOT EXISTS other(
             id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-            message TEXT
+            message TEXT,
+            first_twiny int
         )""")
 
 
@@ -66,8 +67,8 @@ class database:
             pass
 
         else:    
-            self.cursor.execute(f"INSERT INTO users_info (name, last_name, user_name, level, score, id, start_time) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            (self.first_name, self.last_name, self.user_name, 1, 0, self.id, self.time))
+            self.cursor.execute(f"INSERT INTO users_info (name, last_name, user_name, level, score, id, payment_check, start_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            (self.first_name, self.last_name, self.user_name, 1, 0, self.id, 0, self.time))
             self.conn.commit()
 
             print(f"{self.first_name} {self.last_name} started the bot.(ID: {update.effective_user.username})")
@@ -123,6 +124,7 @@ class database:
                 self.cursor.execute(f"UPDATE users_info set level = ({tow}) WHERE id = {update.effective_user.id}")
                 self.conn.commit()
                 print(f"{update.effective_user.name} right answer!")
+
 
         if condition == False:
             self.cursor.execute(f"SELECT level FROM users_info WHERE id = {update.effective_user.id}")
@@ -235,7 +237,7 @@ class database:
 
     # return message for sending to all users
     def message_to_all_users(self, update: Update, context: CallbackContext):
-        self.cursor.execute(f"SELECT message FROM send_msg WHERE id == 1")
+        self.cursor.execute(f"SELECT message FROM other WHERE id == 1")
         result = self.cursor.fetchall()
         for row in result:
             return row[0]
@@ -264,3 +266,32 @@ class database:
         result = self.cursor.fetchall()
         for row in result:
             return row[0]
+
+    def first_twiny_number(self, update: Update, context: CallbackContext):
+            self.cursor.execute(f"SELECT first_twiny FROM other WHERE id == 1")
+            result1 = self.cursor.fetchall()
+            for tow in result1:
+                return tow[0]
+
+    def first_twiny(self, update: Update, context: CallbackContext):
+        self.cursor.execute(f"SELECT payment_check FROM users_info WHERE id == {update.effective_user.id}")
+        result = self.cursor.fetchall()
+        for row in result:
+            if row[0] == 0:
+                    return True
+            else:
+                return False
+
+
+    def plus_twiny(self, update: Update, context: CallbackContext):
+        self.cursor.execute(f"SELECT first_twiny FROM other WHERE id == 1")
+        result = self.cursor.fetchall()
+        for row in result:
+            set_users_number = row[0] + 1
+            self.cursor.execute(f"UPDATE other SET first_twiny = '{set_users_number}' WHERE id = 1")
+            self.conn.commit()
+
+    def change_confition(self, update: Update, context: CallbackContext):
+
+        self.cursor.execute(f"UPDATE users_info SET payment_check = '1' WHERE id = {update.effective_chat.id}")
+        self.conn.commit()

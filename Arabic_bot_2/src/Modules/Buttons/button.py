@@ -54,3 +54,18 @@ class btn():
             text=f"Hello Habibi",
             reply_markup=ReplyKeyboardMarkup(button, one_time_keyboard=True)
             )
+
+    def payment(update: Update, context: CallbackContext):
+        # creating the button
+        button = [["میخوام پیشرفت کنم😎"]]
+
+        # send the button to user
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=f"""قیمت این ربات فعلا ۹۹ هزار تومن هست، که بعد از تموم شدن دوره آزمون اول(آزمونی که تو همین ربات برگذار کردیم) قیمتش بیشتر میشه.😄😄
+
+و البته ۲۰ نفر اولی که روی دکمه پایین کلیک کنند، این ربات رو با قیمت ۷۹ هزار تومن دریافت میکنند.😍😍
+
+پس جزو نفر های اولی باش که برای پیشرفت خودشون هزینه میکنند.😎💪🏻""",
+            reply_markup=ReplyKeyboardMarkup(button, one_time_keyboard=True)
+            )
