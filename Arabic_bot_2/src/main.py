@@ -6,7 +6,7 @@ from Modules.DataBase.database_handler import database
 message = msg()
 data = database()
 
-TOKEN = "5519292522:AAHe6b_MdDmEFw6uNg_oyVCp93HY6C_czDE"
+TOKEN = "5422711752:AAGnk2EEEC581GPhFXNytDtrDQhd8wJxWmo"
 
 def main():
     """Start the bot."""
