@@ -22,27 +22,29 @@ class msg:
 
     def welcomeMsg(update: Update, context: CallbackContext):
 
-        data.botStart(update, context)
+        if data.check_user(update, context) == True:
+            
+            data.botStart(update, context)
 
 
-        context.bot.send_message('@botbotte',
+            context.bot.send_message('@botbotte',
                                  text=f"{data.number_of_users(update, context)}. {update.effective_user.first_name} {update.effective_user.last_name}\nID: @{update.effective_user.username}")
 
-        context.bot.send_chat_action(chat_id=update.effective_chat.id, action=ChatAction.TYPING)
+            context.bot.send_chat_action(chat_id=update.effective_chat.id, action=ChatAction.TYPING)
 
-        sleep(1.5)
+            sleep(1.5)
 
-        update.message.reply_text(f"""مرحبا {update.effective_user.first_name} 🤗 کیفک؟ 😏
+            update.message.reply_text(f"""مرحبا {update.effective_user.first_name} 🤗 کیفک؟ 😏
 
 من رباتی هستم که کمکت می‌کنم عربی (لهجه لبنانی) خودت رو محک بزنی و ببینی سطح عربیت در چه حدی هست.
 
 حتی بهت میگم 🔸دقیقاً🔸 کجاها ضعف داری.""")
 
 
-        context.bot.send_chat_action(chat_id=update.effective_chat.id, action=ChatAction.TYPING)
-        sleep(4)
+            context.bot.send_chat_action(chat_id=update.effective_chat.id, action=ChatAction.TYPING)
+            sleep(4)
 
-        update.message.reply_text("""حالا قراره چطوری این کار رو انجام بدیم؟؟🤓
+            update.message.reply_text("""حالا قراره چطوری این کار رو انجام بدیم؟؟🤓
 خیلی ساده ...
 
 من الان یه امتحان تستی ازت میگیرم که ۱۵ دقیقه هم وقتت رو نمیگیره، این امتحان شامل خیلی از مباحث مهم میشه که حتما باید بلد باشی.
@@ -51,14 +53,17 @@ class msg:
 
 و بهت میگم  روی کدوم مباحث بیشتر باید کار کنی.😎💪🏻""")
 
-        sleep(7)
+            sleep(7)
 
-        update.message.reply_text("""‼️حواست باشه فقط یه بار بیشتر نمیتونی امتحان بدی، پس سعی کن قششششنگ تمرکز کنی‼️""")
+            update.message.reply_text("""‼️حواست باشه فقط یه بار بیشتر نمیتونی امتحان بدی، پس سعی کن قششششنگ تمرکز کنی‼️""")
 
-        sleep(2)
+            sleep(2)
 
-        button.start_quiz(update, context)
+            button.start_quiz(update, context)
 
+
+        else:
+            pass
 
 # -----------------------------------------------------------------------------------------
     

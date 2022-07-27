@@ -301,3 +301,14 @@ class database:
             self.cursor.execute(f"UPDATE other SET number_of_users = '{set_users_number}' WHERE id = 1")
             self.conn.commit()
             return set_users_number
+    
+
+    # Check if user exist or not
+    def check_user(self, update: Update, context: CallbackContext):
+        self.cursor.execute(f"SELECT user_name from users_info WHERE id = ?",(update.effective_user.id,))
+        result = self.cursor.fetchall()
+        if str(result) == "[('"+str(update.effective_user.username)+"',)]":
+            return False
+            
+        else:
+            return True
